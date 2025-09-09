@@ -46,7 +46,7 @@ from reproject import reproject_interp
 #Paths and definitions
 drivepath = '/orange/adamginsburg/ACES/mosaics/cubes/' #Data directory containing cubes
 mom0dir = '/orange/adamginsburg/ACES/broadline_sources/EVFs/moments/mom0_masked/'#Directory where mom0 maps are stored.
-savedir_figure = '/orange/adamginsburg/ACES/broadline_sources/EVFs/ratios/masked/' #Directory where ratio map figures will be saved (with folders in this dir made for each EVF)
+savedir_fits = '/orange/adamginsburg/ACES/broadline_sources/EVFs/ratios/masked/' #Directory where ratio map figures will be saved (with folders in this dir made for each EVF)
 
 #drivepath = '/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/cubes/' #Data directory
 #mom0dir = '/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/moment_maps/MOM0/masked/' #Directory where mom0 maps are stored
@@ -55,7 +55,8 @@ savedir_figure = '/orange/adamginsburg/ACES/broadline_sources/EVFs/ratios/masked
 
 
 #EVF_tab = Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/Filtered_EVFs_table.ecsv') # HVCC_resampled_subcube_regions.ecsv
-EVF_tab = Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/HVCC_resampled_subcube_regions.ecsv')
+EVF_tab = Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/HVCC_resampled_subcube_regions_v3.ecsv')
+#Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/HVCC_resampled_subcube_regions.ecsv')
 EVF_reg = Regions.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/EVF_reg_list.reg')
 
 #EVF_tab = Table.read('/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/Identification/TILES_TABLES/Filtered_EVFs_table.ecsv')
@@ -107,7 +108,7 @@ for line in linetracers:
         data.close()
         cube.allow_huge_operations=True
         for i in range(len(EVF_reg)):
-            subcube = cube.subcube_from_regions([EVF_reg[i]])
+            subcube = cube.subcube_from_regions([EVF_reg[i]], minimize=False)
             subcube = subcube.spectral_slab(vel_range_list[i][0]* u.km / u.s, vel_range_list[i][1]* u.km / u.s)
             mask = noise_mask(subcube,vel_range_list[i][0]* u.km / u.s,vel_range_list[i][1]* u.km / u.s, noise_level_sigma)
             subcube = subcube.with_mask(mask)

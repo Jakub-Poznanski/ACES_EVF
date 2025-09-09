@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
 
 from IPython.display import display, HTML
 display(HTML("<style>.container { width:96% !important; }</style>"))
-
-
-# In[1]:
 
 
 import os, glob
@@ -53,23 +48,18 @@ from spectral_cube import Projection
 from reproject import reproject_interp
 
 
-# In[9]:
-
-
 #Paths and definitions
 drivepath = '/orange/adamginsburg/ACES/mosaics/cubes/' #Data directory containing cubes
 mom0dir = '/orange/adamginsburg/ACES/broadline_sources/EVFs/moments/mom0_masked/'#Directory where mom0 maps are stored.
-savedir_figure = '/orange/adamginsburg/ACES/broadline_sources/EVFs/ratios/masked/' #Directory where ratio map figures will be saved (with folders in this dir made for each EVF)
+savedir_fits = '/orange/adamginsburg/ACES/broadline_sources/EVFs/ratios/masked/' #Directory where ratio map figures will be saved (with folders in this dir made for each EVF)
 
 #drivepath = '/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/cubes/' #Data directory
 #mom0dir = '/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/moment_maps/MOM0/masked/' #Directory where mom0 maps are stored
 #savedir_fits = '/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/RatioMaps-AltMasking/' #Directory where .fits ratio map figures will be saved
 
 
-# In[4]:
-
-
-EVF_tab = Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/Filtered_EVFs_table.ecsv')
+EVF_tab = Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/HVCC_resampled_subcube_regions_v3.ecsv')
+#Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/Filtered_EVFs_table.ecsv')
 EVF_reg = Regions.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/EVF_reg_list.reg')
 
 #EVF_tab = Table.read('/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/Identification/TILES_TABLES/Filtered_EVFs_table.ecsv')
@@ -77,9 +67,6 @@ EVF_reg = Regions.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/EVF_
 #EVF_tab.pprint_all() #prints ALL of the table without any truncation with ellipses
 
 #EVF_reg = Regions.read('/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/Identification/TILES_TABLES/EVF_reg_list.reg')
-
-
-# In[11]:
 
 
 vel_range_list = []
@@ -98,10 +85,6 @@ for evf in EVF_tab:
 
     
 linetracers = ['CS21', 'H13CN', 'H13COp', 'SiO21', 'SO32', 'SO21', 'HN13C', 'HC3N', 'HNCO_7m12mTP']
-
-
-# In[ ]:
-
 
 #Make and save moment 0 maps for all line tracers
 noise_level_sigma = 3. #number of sigma to mask by
@@ -126,15 +109,12 @@ for line in linetracers:
         data.close()
         cube.allow_huge_operations=True
         for i in range(len(EVF_reg)):
-            subcube = cube.subcube_from_regions([EVF_reg[i]])
+            subcube = cube.subcube_from_regions([EVF_reg[i]], minimize=False)
             subcube = subcube.spectral_slab(vel_range_list[i][0]* u.km / u.s, vel_range_list[i][1]* u.km / u.s)
             mask = noise_mask(subcube,vel_range_list[i][0]* u.km / u.s,vel_range_list[i][1]* u.km / u.s, noise_level_sigma)
             subcube = subcube.with_mask(mask)
             mom0 = subcube.moment(order=0)
             mom0.write(mom0folder +f'/evf{evf_num[i]}_l{lb_list[i][0]}_b{lb_list[i][1]}_{line}mom0.fits', overwrite=True)
-
-
-# In[12]:
 
 
 #Gets lists of EVF names
@@ -149,9 +129,6 @@ for idx,lb in enumerate(lb_list):
     lb_name_list.append(lb_name)
     
 print(len(lb_name_list))
-
-
-# In[17]:
 
 
 #This will make and save line tracer ratio maps AS FITS FILES for all EVF sources
@@ -247,10 +224,6 @@ while s<len(evf_source_names): #Iterates through each source
     print("**************************************")
 
     s+=1
-
-
-# In[ ]:
-
 
 
 
