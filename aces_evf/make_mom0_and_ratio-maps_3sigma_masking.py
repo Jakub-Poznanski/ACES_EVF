@@ -74,6 +74,7 @@ delta_l_list  = []
 delta_b_list = []
 lb_list = []
 evf_num = []
+EVF_reg = []
 for evf in EVF_tab:
     vel_range = (evf['min_v'], evf['max_v'])
     vel_range_list.append(vel_range)
@@ -82,6 +83,7 @@ for evf in EVF_tab:
     evf_num.append(evf['ID Number'])
     lb=(evf['l'], evf['b'])
     lb_list.append(lb)
+    EVF_reg.append(regions.RectangleSkyRegion(center=SkyCoord(evf['l']*u.deg, evf['b']*u.deg, frame='galactic'), width=evf['deltal']*u.deg, height=evf['deltab']*u.deg, angle=0*u.deg))
 
     
 linetracers = ['CS21', 'H13CN', 'H13COp', 'SiO21', 'SO32', 'SO21', 'HN13C', 'HC3N', 'HNCO_7m12mTP']

@@ -57,7 +57,7 @@ savedir_fits = '/orange/adamginsburg/ACES/broadline_sources/EVFs/ratios/masked/'
 #EVF_tab = Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/Filtered_EVFs_table.ecsv') # HVCC_resampled_subcube_regions.ecsv
 EVF_tab = Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/HVCC_resampled_subcube_regions_v3.ecsv')
 #Table.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/HVCC_resampled_subcube_regions.ecsv')
-EVF_reg = Regions.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/EVF_reg_list.reg')
+#EVF_reg = Regions.read('/blue/adamginsburg/savannahgramze/ACES_EVF/aces_evf/EVF_reg_list.reg')
 
 #EVF_tab = Table.read('/Users/clairecook/CMZ-Central20pc/EVFs/DATATEST/Identification/TILES_TABLES/Filtered_EVFs_table.ecsv')
 #print(EVF_tab)
@@ -70,6 +70,7 @@ delta_l_list  = []
 delta_b_list = []
 lb_list = []
 evf_num = []
+EVF_reg = []
 for evf in EVF_tab:
     vel_range = (evf['min_v'], evf['max_v'])
     vel_range_list.append(vel_range)
@@ -78,6 +79,7 @@ for evf in EVF_tab:
     evf_num.append(evf['ID Number'])
     lb=(evf['l'], evf['b'])
     lb_list.append(lb)
+    EVF_reg.append(regions.RectangleSkyRegion(center=SkyCoord(evf['l']*u.deg, evf['b']*u.deg, frame='galactic'), width=evf['deltal']*u.deg, height=evf['deltab']*u.deg, angle=0*u.deg))
 
 #linetracers = ['SiOFAKE', 'CS21FAKE', 'HNCOFAKE'] #for tests
     
