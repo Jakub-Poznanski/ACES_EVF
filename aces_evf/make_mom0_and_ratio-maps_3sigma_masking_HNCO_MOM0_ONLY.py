@@ -38,6 +38,7 @@ import astropy.io.fits as pyfits
 
 
 from regions import Regions
+import regions
 from spectral_cube import SpectralCube
 from spectral_cube import Projection
 
